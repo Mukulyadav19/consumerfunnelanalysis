@@ -1,0 +1,21 @@
+ProductID,ProductName,Category,Price
+1,Running Shoes,Footwear,120.0
+2,Leather Jacket,Apparel,250.0
+3,Yoga Mat,Fitness,35.0
+4,Wireless Earbuds,Electronics,99.0
+5,Smart Watch,Electronics,199.0
+6,Backpack,Accessories,65.0
+7,Sunglasses,Accessories,45.0
+8,Water Bottle,Fitness,25.0
+9,Gym Duffel,Accessories,55.0
+10,Trail Hiking Boots,Footwear,140.0
+11,Football Helmet,Sports Gear,150.0
+12,Hockey Stick,Sports Gear,110.0
+13,Baseball Glove,Sports Gear,85.0
+14,Swim Goggles,Fitness,30.0
+15,Tennis Racket,Sports Gear,130.0
+16,Fitness Tracker,Electronics,89.0
+17,Cycling Helmet,Sports Gear,75.0
+18,Compression Tights,Apparel,48.0
+19,Resistance Bands,Fitness,20.0
+20,Insulated Jacket,Apparel,180.0

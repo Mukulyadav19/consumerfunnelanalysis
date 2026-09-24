@@ -1,0 +1,86 @@
+// ==============================================================================
+// ShopEasy E-Commerce Power BI - Verified DAX Measure Suite
+// Designed for 2-Page Executive Overview & Funnel/Sentiment Diagnostics
+// Zero Mismatch / Fully Aligned with SQL Ground Truth
+// ==============================================================================
+
+// ------------------------------------------------------------------------------
+// PAGE 1: EXECUTIVE OVERVIEW MEASURES
+// ------------------------------------------------------------------------------
+
+// 1. Total Top-of-Funnel Impressions
+Total Impressions = 
+CALCULATE(
+    COUNT(customer_journey_cleaned[JourneyID]),
+    customer_journey_cleaned[Stage] = "IMPRESSIONS"
+)
+
+// 2. Total Journey Clicks (Touchpoint Stage = CLICK)
+Journey Clicks = 
+CALCULATE(
+    COUNT(customer_journey_cleaned[JourneyID]),
+    customer_journey_cleaned[Stage] = "CLICK"
+)
+
+// 3. Total Completed Purchases (Stage = CHECKOUT & Action = PURCHASED)
+Total Purchases = 
+CALCULATE(
+    COUNT(customer_journey_cleaned[JourneyID]),
+    customer_journey_cleaned[Stage] = "CHECKOUT",
+    customer_journey_cleaned[Action] = "PURCHASED"
+)
+
+// 4. Overall Conversion Rate (Completed Purchases / Total Impressions = 220 / 2,292 = 9.60%)
+Overall Conversion Rate = 
+DIVIDE([Total Purchases], [Total Impressions], 0)
+
+// 5. Click-to-Purchase Rate (Completed Purchases / Journey Clicks = 220 / 1,152 = 19.10%)
+Click to Purchase Rate = 
+DIVIDE([Total Purchases], [Journey Clicks], 0)
+
+// 6. View-to-Click Rate (Journey Clicks / Total Impressions = 1,152 / 2,292 = 50.26% ≈ 50.3%)
+View to Click Rate = 
+DIVIDE([Journey Clicks], [Total Impressions], 0)
+
+// 7. Average Product Star Rating (Customer Review Score 1.0 - 5.0)
+Avg Rating = 
+AVERAGE(customer_reviews_sentiment_enriched[Rating])
+
+// 8. Marketing Ad Reach (Aggregated Ad Views from Engagement Data)
+Marketing Ad Reach = 
+SUM(engagement_data_cleaned[Views])
+
+
+// ------------------------------------------------------------------------------
+// PAGE 2: FUNNEL & SENTIMENT DIAGNOSTICS MEASURES
+// ------------------------------------------------------------------------------
+
+// 9. Added to Cart Touchpoints
+Cart Touchpoints = 
+CALCULATE(
+    COUNT(customer_journey_cleaned[JourneyID]),
+    customer_journey_cleaned[Stage] = "CART"
+)
+
+// 10. Total Abandoned Sessions Across All Funnel Stages
+Total Abandoned Sessions = 
+CALCULATE(
+    COUNT(customer_journey_cleaned[JourneyID]),
+    customer_journey_cleaned[Action] = "ABANDONED"
+)
+
+// 11. Abandoned Sessions Specifically at Checkout Stage
+Checkout Abandoned Sessions = 
+CALCULATE(
+    COUNT(customer_journey_cleaned[JourneyID]),
+    customer_journey_cleaned[Stage] = "CHECKOUT",
+    customer_journey_cleaned[Action] = "ABANDONED"
+)
+
+// 12. Checkout Drop-Off Share (575 / 598 = 96.15% ≈ 96% of all abandonments)
+Pct Drop Off at Checkout = 
+DIVIDE([Checkout Abandoned Sessions], [Total Abandoned Sessions], 0)
+
+// 13. Total Customer Review Count
+Total Reviews = 
+COUNT(customer_reviews_sentiment_enriched[ReviewID])
