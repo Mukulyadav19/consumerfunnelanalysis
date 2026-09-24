@@ -1,3 +1,9 @@
+# Datasets and CSVs
+data/
+*.csv
+*.tsv
+*.xlsx
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

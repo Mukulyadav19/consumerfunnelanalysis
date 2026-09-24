@@ -70,30 +70,13 @@ The data model connects 6 relational tables through a Star Schema centered on a 
 ```
 shopeasy-funnel-analysis/
 │
-├── data/
-│   ├── raw/                            # 6 raw datasets with injected real-world anomalies
-│   │   ├── customer_journey_raw.csv
-│   │   ├── engagement_data_raw.csv
-│   │   ├── customer_reviews_raw.csv
-│   │   ├── customers.csv
-│   │   ├── products.csv
-│   │   └── geography.csv
-│   └── cleaned/                        # Fully normalized, deduplicated & enriched CSVs
-│       ├── customer_journey_cleaned.csv
-│       ├── engagement_data_cleaned.csv
-│       ├── customer_reviews_sentiment_enriched.csv
-│       ├── customers.csv
-│       ├── products.csv
-│       └── geography.csv
-│
 ├── sql/
 │   ├── 01_Data_Validation.sql          # Diagnostic profiling, null checks & duplicate detection
 │   ├── 02_Cleaning_Transformation.sql   # Production pipeline (ROW_NUMBER(), CHARINDEX, nested REPLACE)
 │   └── 03_Funnel_Diagnostics_Master.sql# Funnel drop-offs (96% checkout proof), conversions & category stats
 │
 ├── python/
-│   ├── clean_and_enrich.py             # Automated Pandas cleaning & rule-based sentiment tagging
-│   └── generate_mock_data.py           # Synthetic dataset generator for reproduction
+│   └── sentiment_analysis.py           # Explainable rule-based sentiment classification & complaint categorization
 │
 ├── power_bi/
 │   ├── DAX_Measures.dax                # 13 verified DAX measures with zero table mismatches
@@ -116,13 +99,17 @@ shopeasy-funnel-analysis/
 * **String Parsing**: Replaced fragile hacks with standard `SUBSTRING` and `CHARINDEX` to parse combined metrics like `"45000-9000"`.
 * **Whitespace Scrubbing**: Handled double and triple whitespace in customer feedback using nested `REPLACE(REPLACE(ReviewText, '   ', ' '), '  ', ' ')`.
 
-### 2. Python Rule-Based Sentiment Analysis
-* Avoided black-box NLP packages in favor of a **100% explainable, auditable Pandas rule-engine**.
-* Mapped star ratings and review text keywords to issue categories:
-  * **Unmet Expectations (31%)**: Cues like `"expect"`, `"average"`, `"misleading"`.
-  * **Product Cost (21%)**: Cues like `"price"`, `"expensive"`, `"shipping"`, `"cheaper"`.
-  * **Product Performance (18%)**: Cues like `"performance"`, `"bad experience"`, `"glitch"`.
-  * **Delivery Issues (17%)**: Cues like `"late"`, `"delivery"`, `"shipping time"`.
+### 2. Python Sentiment Analysis (`python/sentiment_analysis.py`)
+* Implements a **100% explainable, rule-based Pandas sentiment engine** avoiding black-box NLP models.
+* Cleans messy user input and classifies reviews into:
+  * `Positive` (4-5 stars)
+  * `Mixed Positive` / `Mixed Negative` (3 stars evaluated against disappointment indicators)
+  * `Negative` (1-2 stars)
+* Extracts core complaint drivers for dissatisfied customers:
+  * **Unmet Expectations (31%)**: Mismatches between product listings/photos and delivered goods.
+  * **Product Cost (21%)**: Pricing complaints and unexpected checkout/shipping charges.
+  * **Product Performance (18%)**: Quality defects and glitches.
+  * **Delivery (17%)**: Carrier delays and late arrivals.
 
 ### 3. Power BI 2-Page Dashboard Blueprint
 * **Page 1: Executive Overview**:
